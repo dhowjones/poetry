@@ -2,10 +2,11 @@ const fridge = document.getElementById('refrigerator-area');
 const poolBottom = document.getElementById('word-pool-bottom');
 const poolLeft = document.getElementById('word-pool-left');
 const poolRight = document.getElementById('word-pool-right');
-// FIX 1: Filter the array to remove any null elements that weren't found in the HTML.
+// Filter the array to remove any null elements that weren't found in the HTML.
 const allPools = [poolBottom, poolLeft, poolRight].filter(pool => pool !== null); 
 const refreshButton = document.getElementById('refresh-button');
-const ROW_HEIGHT = 45; 
+// ADJUSTED: Increased ROW_HEIGHT from 50 to 65 for a definite vertical gap in the fridge
+const ROW_HEIGHT = 65; 
 let draggedElement = null;
 
 // Function to convert CSV text into an array of words (ROBUST PARSER FIX)
@@ -128,8 +129,6 @@ document.addEventListener('dragstart', (e) => {
     }
 });
 
-
-// FIX 2: Check if 'fridge' exists before adding listeners.
 if (fridge) {
     // --- DRAG OVER EVENT (on the fridge area) ---
     fridge.addEventListener('dragover', (e) => {
@@ -155,14 +154,15 @@ if (fridge) {
             const rawLeft = e.clientX - rect.left - (draggedElement.offsetWidth / 2);
             const rawTop = e.clientY - rect.top - (draggedElement.offsetHeight / 2);
 
-            // 2. Snap to Row Logic
+            // 2. Snap to Row Logic (uses the new ROW_HEIGHT of 65)
             const snappedTop = Math.round(rawTop / ROW_HEIGHT) * ROW_HEIGHT;
             const finalTop = Math.max(0, snappedTop); 
             
             // 3. Apply Positioning (horizontal freedom, vertical snap)
             draggedElement.style.left = rawLeft + 'px';
             draggedElement.style.top = finalTop + 'px'; 
-            draggedElement.style.transform = 'none';
+            // Apply 5% scale to make the word tile wider and taller in the fridge
+            draggedElement.style.transform = 'scale(1.05)'; 
             
             draggedElement = null; 
         }
@@ -170,7 +170,6 @@ if (fridge) {
 }
 
 
-// FIX 3: Loop through the filtered array, which is safe from nulls.
 // --- DROP EVENT (on the word pools - to return a word) ---
 allPools.forEach(pool => {
     // This pool is guaranteed to exist because of the filter at the top.

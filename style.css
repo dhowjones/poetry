@@ -5,11 +5,8 @@ body {
 }
 
 #refrigerator-area {
-    /* --- NEW FLEXBOX LAYOUT --- */
-    position: relative; /* Keep relative for future features */
-    display: flex;      /* NEW: Enable Flexbox */
-    flex-wrap: wrap;    /* NEW: Allow words to wrap to the next line */
-    align-content: flex-start; /* NEW: Align content to the top */
+    /* Reverting to standard relative container for absolute positioning */
+    position: relative; 
     
     width: 90%;
     max-width: 800px;
@@ -18,7 +15,9 @@ body {
     border: 10px solid #ccc;
     background-color: #e0f0ff; 
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    /* Remove 'overflow: hidden' or change it based on preference */
+    overflow: hidden; /* Keep words inside */
+    
+    /* REMOVED: display: flex, flex-wrap, align-content */
 }
 
 .poem-prompt {

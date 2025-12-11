@@ -34,8 +34,8 @@ body {
     cursor: grab;
     z-index: 10;
     
-    /* ADJUSTED: Margin set to 2px for maximum density in the pools */
-    margin: 2px;
+    /* REVERTED: Margin set back to 5px for close spacing in the pools */
+    margin: 5px;
 }
 
 #poetry-layout {

@@ -43,7 +43,8 @@ body {
     display: flex;
     justify-content: center; /* Center the entire layout */
     width: 95%;
-    max-width: 1200px; /* Gives more room for side pools */
+    /* ADJUSTED: Increased max-width to accommodate wider side pools */
+    max-width: 1400px; 
     margin: 20px auto;
 }
 
@@ -54,10 +55,14 @@ body {
 }
 
 .side-pool {
-    width: 200px; /* Width for side columns */
+    /* ADJUSTED: Increased width from 200px to 280px */
+    width: 280px; 
     padding: 10px;
-    margin-top: 200px; /* Align with the middle of the fridge */
-    height: 400px; /* Height matching the fridge */
+    /* ADJUSTED: Increased height from 400px to 800px */
+    height: 800px; 
+    
+    /* Keeping the alignment and scrolling properties */
+    margin-top: 50px; /* Adjusted slightly lower to better center the tall pools */
     overflow-y: auto; /* Allows scrolling */
     border-left: 1px dashed #ccc;
     border-right: 1px dashed #ccc;

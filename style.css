@@ -16,8 +16,6 @@ body {
     background-color: #e0f0ff; 
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     overflow: hidden; /* Keep words inside */
-    
-    /* REMOVED: display: flex, flex-wrap, align-content */
 }
 
 .poem-prompt {
@@ -36,15 +34,15 @@ body {
     cursor: grab;
     z-index: 10;
     
-    /* ADJUSTED: Increased margin for better spacing */
-    /* 8px top/bottom (better row height), 15px left/right (wider spacing) */
-    margin: 8px 15px;
+    /* REVERTED: Margin set back to 5px for close spacing in the pools */
+    margin: 5px;
 }
 
 #poetry-layout {
     display: flex;
     justify-content: center; /* Center the entire layout */
     width: 95%;
+    /* Retaining large max-width (1400px) */
     max-width: 1400px; 
     margin: 20px auto;
 }
@@ -56,11 +54,12 @@ body {
 }
 
 .side-pool {
+    /* Retaining large dimensions (280px wide, 800px tall) */
     width: 280px; 
     padding: 10px;
     height: 800px; 
     
-    margin-top: 50px; /* Adjusted slightly lower to better center the tall pools */
+    margin-top: 50px;
     overflow-y: auto; /* Allows scrolling */
     border-left: 1px dashed #ccc;
     border-right: 1px dashed #ccc;

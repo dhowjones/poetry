@@ -7,14 +7,26 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Borderline Poetry</h1>
 
-    <div id="refrigerator-area">
-        <p class="poem-prompt">Drag words here to create your poem...</p>
-    </div>
-    
-    <div id="word-pool">
+    <div id="poetry-layout">
+
+        <div id="word-pool-left" class="side-pool"></div>
+
+        <div class="center-content">
+            <h1>Borderline Poetry</h1>
+            
+            <button id="refresh-button">Clear Poem & Shuffle Words</button>
+
+            <div id="refrigerator-area">
+                <p class="poem-prompt">Drag words here to begin your poem...</p>
+            </div>
+
+            <div id="word-pool-bottom" class="main-pool"></div>
         </div>
+
+        <div id="word-pool-right" class="side-pool"></div>
+
+    </div>
     
     <script src="script.js"></script>
 </body>

@@ -5,7 +5,7 @@ const poolRight = document.getElementById('word-pool-right');
 // FIX 1: Filter the array to remove any null elements that weren't found in the HTML.
 const allPools = [poolBottom, poolLeft, poolRight].filter(pool => pool !== null); 
 const refreshButton = document.getElementById('refresh-button');
-const ROW_HEIGHT = 30; 
+const ROW_HEIGHT = 45; 
 let draggedElement = null;
 
 // Function to convert CSV text into an array of words (ROBUST PARSER FIX)

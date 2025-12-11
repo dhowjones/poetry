@@ -29,21 +29,22 @@ body {
 .word-tile {
     display: inline-block; 
     padding: 5px 10px;
-    margin: 5px;
     background-color: #fff;
     border: 1px solid #333;
     border-radius: 3px;
     box-shadow: 2px 2px 3px rgba(0,0,0,0.2);
     cursor: grab;
     z-index: 10;
-    margin: 3px;
+    
+    /* ADJUSTED: Increased margin for better spacing */
+    /* 8px top/bottom (better row height), 15px left/right (wider spacing) */
+    margin: 8px 15px;
 }
 
 #poetry-layout {
     display: flex;
     justify-content: center; /* Center the entire layout */
     width: 95%;
-    /* ADJUSTED: Increased max-width to accommodate wider side pools */
     max-width: 1400px; 
     margin: 20px auto;
 }
@@ -55,13 +56,10 @@ body {
 }
 
 .side-pool {
-    /* ADJUSTED: Increased width from 200px to 280px */
     width: 280px; 
     padding: 10px;
-    /* ADJUSTED: Increased height from 400px to 800px */
     height: 800px; 
     
-    /* Keeping the alignment and scrolling properties */
     margin-top: 50px; /* Adjusted slightly lower to better center the tall pools */
     overflow-y: auto; /* Allows scrolling */
     border-left: 1px dashed #ccc;

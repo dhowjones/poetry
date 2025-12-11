@@ -73,7 +73,7 @@ body {
     border-top: 2px dashed #999;
     padding-top: 15px;
     text-align: left;
-    height: 550px; /* Give it a fixed height */
+    /*height: 550px; /* Give it a fixed height */*/
     /*overflow-y: auto;*/
 }
 

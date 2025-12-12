@@ -6,7 +6,7 @@ const poolRight = document.getElementById('word-pool-right');
 const allPools = [poolBottom, poolLeft, poolRight].filter(pool => pool !== null); 
 const refreshButton = document.getElementById('refresh-button');
 // ADJUSTED: Increased ROW_HEIGHT from 50 to 65 for a definite vertical gap in the fridge
-const ROW_HEIGHT = 40; 
+const ROW_HEIGHT = 35; 
 let draggedElement = null;
 
 // Function to convert CSV text into an array of words (ROBUST PARSER FIX)

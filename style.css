@@ -12,7 +12,7 @@ body {
     max-width: 800px;
     height: 400px;
     margin: 20px auto;
-    border: 10px solid #ccc;
+    border: 0;
     background-color: #e4fcd9; 
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     overflow: hidden; /* Keep words inside */

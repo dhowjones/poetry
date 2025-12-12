@@ -1,7 +1,7 @@
 body {
     font-family: sans-serif;
     text-align: center;
-    background-color: ##ffffff;
+    background-color: #ffffff;
 }
 
 #refrigerator-area {
@@ -13,7 +13,7 @@ body {
     height: 400px;
     margin: 20px auto;
     border: 10px solid #ccc;
-    background-color: ##e4fcd9; 
+    background-color: #e4fcd9; 
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     overflow: hidden; /* Keep words inside */
 }

@@ -28,8 +28,8 @@ body {
     display: inline-block; 
     padding: 5px 10px;
     background-color: #fff;
-    border: 1px solid #333;
-    border-radius: 3px;
+    border: 1px solid #454545;
+    border-radius: 5px;
     /*box-shadow: 2px 2px 3px rgba(0,0,0,0.2);*/
     cursor: grab;
     z-index: 10;

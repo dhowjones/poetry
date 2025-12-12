@@ -61,8 +61,8 @@ body {
     
     margin-top: 30px;/*changed from 50 to 30*/
     /*overflow-y: auto; /* Allows scrolling */*/
-    border-left: 1px dashed #ccc;
-    border-right: 1px dashed #ccc;
+    border-left: 0px dashed #ccc;
+    border-right: 0px dashed #ccc;
 }
 
 .main-pool {
@@ -70,7 +70,7 @@ body {
     width: 100%;
     max-width: 800px;
     margin: 10px auto; /*changed from 20 to 10*/
-    border-top: 2px dashed #999;
+    border-top: 0px dashed #999;
     padding-top: 15px;
     text-align: left;
     /*height: 550px; /* Give it a fixed height */*/

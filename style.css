@@ -2,76 +2,59 @@ body {
     font-family: sans-serif;
     text-align: center;
     background-color: #ffffff;
+    /* CRITICAL: Remove default body margin to use the full viewport */
+    margin: 0;
 }
 
-/* --- WORD TILES --- */
-.word-tile {
-    display: inline-block; 
-    padding: 5px 10px;
-    background-color: #fff;
-    border: 1px solid #9E9E9E;
-    border-radius: 5px;
-    cursor: grab;
-    z-index: 10;
-    margin: 2px;
+/* --- FULL-PAGE WORD POOL CONTAINER --- */
+#full-page-pool {
+    /* Fills the entire screen */
+    width: 100%;
+    min-height: 100vh; /* Ensures it covers the viewport even if words don't fill it */
+    padding: 20px;
+    
+    /* CRITICAL FOR BOTTOM ALIGNMENT: Adds extra space below the word tiles
+       to make sure the last row of tiles lines up with the bottom of the fridge area */
+    padding-bottom: 200px; 
+    text-align: center;
 }
 
-/* --- POETRY LAYOUT (The main 3-column container) --- */
+/* --- CENTRAL LAYOUT (Fridge, Logo, Button) --- */
 #poetry-layout {
     display: flex;
-    justify-content: center; 
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center items horizontally */
+    
     width: 95%;
-    max-width: 1400px; 
-    margin: 20px auto;
+    max-width: 800px; /* Max width of the central content */
+    margin: 20px auto; 
+    
+    /* CRITICAL FOR BOTTOM ALIGNMENT: Pushes the entire central block down 
+       to visually align the bottom word row with the bottom of the word pool area. */
+    margin-bottom: 50px; 
+    position: relative; /* Needed to position words correctly around it */
+    z-index: 20; /* Keep the central content above the words */
 }
 
-.center-content {
-    flex-shrink: 0; 
-    width: 800px; 
-    margin: 0 20px;
+/* --- LOGO AREA --- */
+#logo-container {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-/* --- LARGE POOLS (The original side pools) --- */
-.large-pool {
-    width: 280px; 
-    padding: 10px;
-    margin-top: 30px; 
-}
-
-/* --- LOGO and NEW SMALL POOLS LAYOUT --- */
-#logo-and-side-pools {
-    display: flex; /* Makes the small pools and logo sit side-by-side */
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px; /* Space between logo area and fridge */
-}
-
-/* --- NEW SMALL POOLS --- */
-.small-pool {
-    width: 200px; /* Give them a specific small width */
-    height: 100px; /* Give them a small fixed height to match logo height */
-    padding: 5px;
-    /* Optional: Add a subtle border to define the area */
-    /* border: 1px dashed #ddd; */ 
-    overflow-y: auto; /* Allows words to scroll if they exceed height */
-    text-align: left;
-}
-
-/* --- LOGO STYLING --- */
 #main-logo {
     display: block; 
-    max-width: 400px; /* Give the logo a size */
+    max-width: 400px;
     height: auto; 
-    margin: 0 10px; /* Add a bit of horizontal margin between logo and small pools */
+    margin: 0 auto;
 }
 
 /* --- REFRIGERATOR AREA --- */
 #refrigerator-area {
     position: relative; 
-    width: 90%;
-    max-width: 800px;
+    width: 100%; /* Now uses 100% of the max-width: 800px container */
     height: 400px;
-    margin: 0 auto; 
     border: 3px solid #406dcf;
     background-color: #fff; 
     box-shadow: 0 0 0px rgba(0,0,0,0.1);
@@ -84,18 +67,8 @@ body {
     font-style: italic;
 }
 
-/* --- MAIN POOL (Below the Fridge) --- */
-.main-pool {
-    width: 100%;
-    max-width: 800px;
-    margin: 10px auto 0; /* Ensures the refresh button is close to the pool */
-    padding-top: 15px;
-    text-align: left;
-}
-
-/* --- REFRESH BUTTON (Moved) --- */
+/* --- REFRESH BUTTON (Below fridge) --- */
 #refresh-button {
-    /* Updated margin to place it directly below the fridge and above the pool */
     margin: 15px auto 10px; 
     padding: 8px 15px;
     background-color: #fff;
@@ -110,6 +83,15 @@ body {
 #refresh-button:hover {
     background-color: #e4fcd9;
 }
-#refresh-button:hover {
-    background-color: #e4fcd9;
+
+/* --- WORD TILES --- */
+.word-tile {
+    display: inline-block; 
+    padding: 5px 10px;
+    background-color: #fff;
+    border: 1px solid #9E9E9E;
+    border-radius: 5px;
+    cursor: grab;
+    z-index: 10;
+    margin: 2px;
 }

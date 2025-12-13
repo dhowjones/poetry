@@ -4,49 +4,6 @@ body {
     background-color: #ffffff;
 }
 
-/* --- POETRY LAYOUT (Outer Container) --- */
-#poetry-layout {
-    width: 95%;
-    max-width: 1400px; 
-    margin: 20px auto;
-}
-
-/* --- NEW TOP LAYOUT (Logo and its side pools) --- */
-#top-layout {
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Vertically centers the logo with the top pools */
-    margin-bottom: 20px; /* Space below the logo/top-pools and above the fridge */
-}
-
-/* --- CENTER COLUMN (Fridge, Button, Bottom Pool) --- */
-#center-column {
-    /* Uses the remaining space below the top layout */
-    width: 100%; 
-    display: flex; /* Makes the fridge and bottom pool stack vertically */
-    flex-direction: column;
-    align-items: center; /* Centers the fridge/button/pool */
-}
-
-/* --- REFRIGERATOR AREA --- */
-#refrigerator-area {
-    position: relative; 
-    width: 90%;
-    max-width: 800px;
-    height: 400px;
-    margin: 0 auto; /* Removed top/bottom margin */
-    border: 3px solid #406dcf;
-    background-color: #fff; 
-    box-shadow: 0 0 0px rgba(0,0,0,0.1);
-    overflow: hidden;
-}
-
-.poem-prompt {
-    color: #999;
-    padding-top: 150px;
-    font-style: italic;
-}
-
 /* --- WORD TILES --- */
 .word-tile {
     display: inline-block; 
@@ -59,33 +16,86 @@ body {
     margin: 2px;
 }
 
-/* --- SIDE POOLS (Used by both top and bottom side pools) --- */
-.side-pool {
-    width: 280px; 
-    padding: 10px;
-    /* Height and scrolling are managed by content, not fixed height */
+/* --- POETRY LAYOUT (The main 3-column container) --- */
+#poetry-layout {
+    display: flex;
+    justify-content: center; 
+    width: 95%;
+    max-width: 1400px; 
+    margin: 20px auto;
 }
 
-/* Specific centering for the logo image */
+.center-content {
+    flex-shrink: 0; 
+    width: 800px; 
+    margin: 0 20px;
+}
+
+/* --- LARGE POOLS (The original side pools) --- */
+.large-pool {
+    width: 280px; 
+    padding: 10px;
+    margin-top: 30px; 
+}
+
+/* --- LOGO and NEW SMALL POOLS LAYOUT --- */
+#logo-and-side-pools {
+    display: flex; /* Makes the small pools and logo sit side-by-side */
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px; /* Space between logo area and fridge */
+}
+
+/* --- NEW SMALL POOLS --- */
+.small-pool {
+    width: 200px; /* Give them a specific small width */
+    height: 100px; /* Give them a small fixed height to match logo height */
+    padding: 5px;
+    /* Optional: Add a subtle border to define the area */
+    /* border: 1px dashed #ddd; */ 
+    overflow-y: auto; /* Allows words to scroll if they exceed height */
+    text-align: left;
+}
+
+/* --- LOGO STYLING --- */
 #main-logo {
     display: block; 
-    max-width: 350px; /* Example fixed size */
+    max-width: 400px; /* Give the logo a size */
     height: auto; 
+    margin: 0 10px; /* Add a bit of horizontal margin between logo and small pools */
+}
+
+/* --- REFRIGERATOR AREA --- */
+#refrigerator-area {
+    position: relative; 
+    width: 90%;
+    max-width: 800px;
+    height: 400px;
     margin: 0 auto; 
+    border: 3px solid #406dcf;
+    background-color: #fff; 
+    box-shadow: 0 0 0px rgba(0,0,0,0.1);
+    overflow: hidden; 
+}
+
+.poem-prompt {
+    color: #999;
+    padding-top: 150px;
+    font-style: italic;
 }
 
 /* --- MAIN POOL (Below the Fridge) --- */
-#word-pool-bottom {
+.main-pool {
     width: 100%;
     max-width: 800px;
-    margin-top: 10px; /* Reduced gap between button and pool */
+    margin: 10px auto 0; /* Ensures the refresh button is close to the pool */
     padding-top: 15px;
     text-align: left;
 }
 
 /* --- REFRESH BUTTON (Moved) --- */
 #refresh-button {
-    /* Updated margin to place it below the fridge */
+    /* Updated margin to place it directly below the fridge and above the pool */
     margin: 15px auto 10px; 
     padding: 8px 15px;
     background-color: #fff;
@@ -97,6 +107,9 @@ body {
     display: block;
 }
 
+#refresh-button:hover {
+    background-color: #e4fcd9;
+}
 #refresh-button:hover {
     background-color: #e4fcd9;
 }

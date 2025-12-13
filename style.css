@@ -2,40 +2,11 @@ body {
     font-family: sans-serif;
     text-align: center;
     background-color: #ffffff;
-    margin: 0;
+    margin: 0; /* Keep margin: 0 for full control */
 }
 
-/* --- FULL-PAGE WORD POOL CONTAINER (Anchor for Absolute Positioning) --- */
-#full-page-pool {
-    position: relative; /* CRITICAL: Now the anchor for absolutely positioned words */
-    width: 100%;
-    min-height: 100vh;
-    padding: 20px;
-    
-    /* Pushes content down to align words at the bottom */
-    padding-bottom: 200px; 
-    text-align: center;
-}
-
-/* --- CENTRAL LAYOUT (Fridge, Logo, Button) --- */
-#poetry-layout {
-    /* CRITICAL: Set the central area to float or be absolutely positioned 
-       so the word tiles can wrap around it using margin in the word-tile rule below.
-       Let's stick with margins and standard flow, but adjust width/margins. */
-    width: 800px; /* Set the fixed width for the central content */
-    margin: 20px auto; 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    
-    /* Pushes the entire central block down for alignment */
-    margin-bottom: 50px; 
-    z-index: 20; 
-}
-
-/* --- WORD TILES: The Key to Flowing Around the Fridge --- */
+/* --- WORD TILES --- */
 .word-tile {
-    /* Use float/inline-block to allow the text to flow */
     display: inline-block; 
     padding: 5px 10px;
     background-color: #fff;
@@ -46,18 +17,31 @@ body {
     margin: 2px;
 }
 
-/* --- REFRIGERATOR AREA --- */
-#refrigerator-area {
-    position: relative; 
-    width: 100%; 
-    height: 400px;
-    border: 3px solid #406dcf;
-    background-color: #fff; 
-    box-shadow: 0 0 0px rgba(0,0,0,0.1);
-    overflow: hidden; 
+/* --- POETRY LAYOUT (The main 3-column container) --- */
+#poetry-layout {
+    display: flex;
+    justify-content: center; /* Centers the whole structure */
+    width: 95%;
+    max-width: 1400px; 
+    margin: 20px auto;
 }
 
-/* --- LOGO, BUTTON, and other styles remain mostly the same... --- */
+.center-content {
+    flex-shrink: 0; 
+    width: 800px; 
+    margin: 0 20px;
+}
+
+/* --- SIDE POOLS (The large left and right pools) --- */
+.side-pool {
+    width: 280px; 
+    padding: 10px;
+    /* Adjusted margin to vertically align with the fridge */
+    margin-top: 30px; 
+    text-align: left;
+}
+
+/* --- LOGO STYLING --- */
 #logo-container {
     width: 100%;
     text-align: center;
@@ -71,12 +55,34 @@ body {
     margin: 0 auto;
 }
 
+/* --- REFRIGERATOR AREA --- */
+#refrigerator-area {
+    position: relative; 
+    width: 100%; 
+    height: 400px;
+    margin: 0 auto; /* No vertical margin needed here */
+    border: 3px solid #406dcf;
+    background-color: #fff; 
+    box-shadow: 0 0 0px rgba(0,0,0,0.1);
+    overflow: hidden; 
+}
+
 .poem-prompt {
     color: #999;
     padding-top: 150px;
     font-style: italic;
 }
 
+/* --- MAIN POOL (Below the Fridge) --- */
+.main-pool {
+    width: 100%;
+    max-width: 800px;
+    margin: 10px auto 0; 
+    padding-top: 15px;
+    text-align: left;
+}
+
+/* --- REFRESH BUTTON (Below fridge) --- */
 #refresh-button {
     margin: 15px auto 10px; 
     padding: 8px 15px;

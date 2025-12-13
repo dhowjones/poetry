@@ -1,65 +1,13 @@
 const fridge = document.getElementById('refrigerator-area');
-// All words go into the single full-page pool
-const fullPagePool = document.getElementById('full-page-pool'); 
+const poolBottom = document.getElementById('word-pool-bottom');
+const poolLeft = document.getElementById('word-pool-left');
+const poolRight = document.getElementById('word-pool-right');
 
-// The only pool is the fullPagePool
-const allPools = [fullPagePool].filter(pool => pool !== null); 
+// Collect ALL three word pools for word distribution
+const allPools = [poolBottom, poolLeft, poolRight].filter(pool => pool !== null); 
 const refreshButton = document.getElementById('refresh-button');
 const ROW_HEIGHT = 35; 
 let draggedElement = null;
-
-// Function to convert CSV text into an array of words (ROBUST PARSER FIX)
-// ... (The rest of your JS code continues here, largely unchanged)
-
-// The tile creation function is now much simpler:
-function createTiles(wordsArray) {
-    if (fullPagePool) {
-        wordsArray.sort(() => Math.random() - 0.5).forEach((word) => {
-            const tile = document.createElement('div');
-            tile.classList.add('word-tile');
-            tile.textContent = word;
-            tile.setAttribute('draggable', true);
-            
-            // All words go into the single pool
-            fullPagePool.appendChild(tile); 
-        });
-    } else {
-        console.error("The full-page word pool container was not found.");
-    }
-}
-
-
-// --- REFRESH BUTTON LOGIC ---
-function clearAndShuffle() {
-    const allTiles = document.querySelectorAll('.word-tile');
-    
-    allTiles.forEach(tile => {
-        if (fullPagePool) {
-            fullPagePool.appendChild(tile);
-        }
-        
-        tile.style.position = '';
-        tile.style.left = '';
-        tile.style.top = '';
-        tile.style.transform = '';
-    });
-    
-    if (fridge && !fridge.querySelector('.poem-prompt')) {
-        const prompt = document.createElement('p');
-        prompt.classList.add('poem-prompt');
-        prompt.textContent = "Drag words here to begin your poem...";
-        fridge.appendChild(prompt);
-    }
-    
-    if (fullPagePool) {
-        // Re-shuffle words within the single pool
-        const shuffledWords = Array.from(allTiles).sort(() => Math.random() - 0.5);
-        
-        shuffledWords.forEach((tile) => {
-            fullPagePool.appendChild(tile);
-        });
-    }
-}
 
 // Function to convert CSV text into an array of words (ROBUST PARSER FIX)
 function parseWords(csvText) {
@@ -116,7 +64,7 @@ async function loadWordsAndCreateTiles() {
     }
 }
 
-// Function to create the HTML tiles and distribute them across pools
+// Function to create the HTML tiles and distribute them across ALL three pools
 function createTiles(wordsArray) {
     if (allPools.length === 0) {
         console.error("No word pool containers found. Check index.html IDs.");
@@ -130,27 +78,25 @@ function createTiles(wordsArray) {
         
         tile.setAttribute('draggable', true);
         
-        // Distribute words across the available pools
+        // Distribute words across the available pools (0=bottom, 1=left, 2=right, 0=bottom, etc.)
         allPools[index % allPools.length].appendChild(tile);
     });
 }
 
 
-// --- REFRESH BUTTON LOGIC ---
+// --- REFRESH BUTTON LOGIC (Puts all tiles back and reshuffles them across all pools) ---
 function clearAndShuffle() {
     const allTiles = document.querySelectorAll('.word-tile');
     
     allTiles.forEach(tile => {
-        if (poolBottom) {
-            poolBottom.appendChild(tile);
-        }
-        
+        // Reset tile positioning/scaling regardless of which pool it will end up in
         tile.style.position = '';
         tile.style.left = '';
         tile.style.top = '';
         tile.style.transform = '';
     });
     
+    // Restore the prompt if the fridge is empty
     if (fridge && !fridge.querySelector('.poem-prompt')) {
         const prompt = document.createElement('p');
         prompt.classList.add('poem-prompt');
@@ -158,6 +104,7 @@ function clearAndShuffle() {
         fridge.appendChild(prompt);
     }
     
+    // Re-shuffle and re-distribute the words across all available pools
     if (allPools.length > 0) {
         const shuffledWords = Array.from(allTiles).sort(() => Math.random() - 0.5);
         
@@ -177,74 +124,4 @@ if (refreshButton) {
 document.addEventListener('dragstart', (e) => {
     if (e.target.classList.contains('word-tile')) {
         draggedElement = e.target;
-        e.dataTransfer.setData('text/plain', e.target.textContent);
-    }
-});
-
-if (fridge) {
-    // --- DRAG OVER EVENT (on the fridge area) ---
-    fridge.addEventListener('dragover', (e) => {
-        e.preventDefault(); 
-    });
-
-    // --- DROP EVENT (on the fridge area - Snap-to-Row Logic) ---
-    fridge.addEventListener('drop', (e) => {
-        e.preventDefault();
-        
-        if (draggedElement && draggedElement.classList.contains('word-tile')) {
-            const prompt = fridge.querySelector('.poem-prompt');
-            if (prompt) { prompt.remove(); }
-            
-            fridge.appendChild(draggedElement);
-            
-            // 1. Set the position
-            draggedElement.style.position = 'absolute';
-            
-            const rect = fridge.getBoundingClientRect();
-            
-            // Calculate raw drop coordinates relative to the fridge
-            const rawLeft = e.clientX - rect.left - (draggedElement.offsetWidth / 2);
-            const rawTop = e.clientY - rect.top - (draggedElement.offsetHeight / 2);
-
-            // 2. Snap to Row Logic (uses the new ROW_HEIGHT of 65)
-            const snappedTop = Math.round(rawTop / ROW_HEIGHT) * ROW_HEIGHT;
-            const finalTop = Math.max(0, snappedTop); 
-            
-            // 3. Apply Positioning (horizontal freedom, vertical snap)
-            draggedElement.style.left = rawLeft + 'px';
-            draggedElement.style.top = finalTop + 'px'; 
-            // Apply 5% scale to make the word tile wider and taller in the fridge
-            draggedElement.style.transform = 'scale(1.05)'; 
-            
-            draggedElement = null; 
-        }
-    });
-}
-
-// --- DROP EVENT (on the word pool - to return a word) ---
-if (fullPagePool) {
-    fullPagePool.addEventListener('dragover', (e) => {
-        e.preventDefault(); 
-    });
-
-    fullPagePool.addEventListener('drop', (e) => {
-        e.preventDefault();
-        
-        if (draggedElement && draggedElement.classList.contains('word-tile')) {
-            fullPagePool.appendChild(draggedElement); 
-            
-            // CRITICAL: Remove all positioning styles to return it to the normal flow
-            draggedElement.style.position = '';
-            draggedElement.style.left = '';
-            draggedElement.style.top = '';
-            draggedElement.style.transform = '';
-
-            draggedElement = null;
-        }
-    });
-}
-
-// ----------------------------------------------------
-// START APPLICATION
-// ----------------------------------------------------
-loadWordsAndCreateTiles();
+        e.dataTransfer.setData

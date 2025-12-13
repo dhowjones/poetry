@@ -48,7 +48,7 @@ async function loadWordsAndCreateTiles() {
         const response = await fetch('Borderline Poetry - Individual words.csv'); 
         
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status} - File not found.`);
+            throw new Error(`HTTP error! Status: ${response.status} - File not found. Check the CSV file path and name.`);
         }
         
         const csvText = await response.text();
@@ -59,7 +59,8 @@ async function loadWordsAndCreateTiles() {
     } catch (error) {
         console.error("Could not load the word list:", error);
         if (poolBottom) {
-             poolBottom.innerHTML = 'Error loading word list. Check console for details.';
+             // Display the error message in the bottom pool for visibility
+             poolBottom.innerHTML = '<span style="color: red;">Error loading word list. Check console for details.</span>';
         }
     }
 }
@@ -124,4 +125,77 @@ if (refreshButton) {
 document.addEventListener('dragstart', (e) => {
     if (e.target.classList.contains('word-tile')) {
         draggedElement = e.target;
-        e.dataTransfer.setData
+        // CRITICAL: This line was incomplete in your code
+        e.dataTransfer.setData('text/plain', e.target.textContent);
+    }
+});
+
+if (fridge) {
+    // --- DRAG OVER EVENT (on the fridge area) ---
+    fridge.addEventListener('dragover', (e) => {
+        e.preventDefault(); 
+    });
+
+    // --- DROP EVENT (on the fridge area - Snap-to-Row Logic) ---
+    fridge.addEventListener('drop', (e) => {
+        e.preventDefault();
+        
+        if (draggedElement && draggedElement.classList.contains('word-tile')) {
+            const prompt = fridge.querySelector('.poem-prompt');
+            if (prompt) { prompt.remove(); }
+            
+            fridge.appendChild(draggedElement);
+            
+            // 1. Set the position
+            draggedElement.style.position = 'absolute';
+            
+            const rect = fridge.getBoundingClientRect();
+            
+            // Calculate raw drop coordinates relative to the fridge
+            const rawLeft = e.clientX - rect.left - (draggedElement.offsetWidth / 2);
+            const rawTop = e.clientY - rect.top - (draggedElement.offsetHeight / 2);
+
+            // 2. Snap to Row Logic 
+            const snappedTop = Math.round(rawTop / ROW_HEIGHT) * ROW_HEIGHT;
+            const finalTop = Math.max(0, snappedTop); 
+            
+            // 3. Apply Positioning (horizontal freedom, vertical snap)
+            draggedElement.style.left = rawLeft + 'px';
+            draggedElement.style.top = finalTop + 'px'; 
+            // Apply 5% scale to make the word tile wider and taller in the fridge
+            draggedElement.style.transform = 'scale(1.05)'; 
+            
+            draggedElement = null; 
+        }
+    });
+}
+
+// --- DROP EVENT (on ANY word pool - to return a word) ---
+allPools.forEach(pool => {
+    pool.addEventListener('dragover', (e) => {
+        e.preventDefault(); 
+    });
+
+    pool.addEventListener('drop', (e) => {
+        e.preventDefault();
+        
+        if (draggedElement && draggedElement.classList.contains('word-tile')) {
+            pool.appendChild(draggedElement); 
+            
+            // CRITICAL: Remove all positioning styles to return it to the normal flow
+            draggedElement.style.position = '';
+            draggedElement.style.left = '';
+            draggedElement.style.top = '';
+            draggedElement.style.transform = '';
+
+            draggedElement = null;
+        }
+    });
+});
+
+
+// ----------------------------------------------------
+// START APPLICATION
+// CRITICAL FIX: This line calls the function that loads the CSV and creates the words.
+// ----------------------------------------------------
+loadWordsAndCreateTiles();

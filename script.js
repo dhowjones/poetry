@@ -1,11 +1,12 @@
 const fridge = document.getElementById('refrigerator-area');
 const poolBottom = document.getElementById('word-pool-bottom');
-const poolLeft = document.getElementById('word-pool-left');
-const poolRight = document.getElementById('word-pool-right');
-// Filter the array to remove any null elements that weren't found in the HTML.
-const allPools = [poolBottom, poolLeft, poolRight].filter(pool => pool !== null); 
+// NEW POOLS:
+const poolTopLeft = document.getElementById('word-pool-left-top');
+const poolTopRight = document.getElementById('word-pool-right-top');
+
+// Filter the array to get ALL word pools
+const allPools = [poolBottom, poolTopLeft, poolTopRight].filter(pool => pool !== null); 
 const refreshButton = document.getElementById('refresh-button');
-// ADJUSTED: Increased ROW_HEIGHT from 50 to 65 for a definite vertical gap in the fridge
 const ROW_HEIGHT = 35; 
 let draggedElement = null;
 

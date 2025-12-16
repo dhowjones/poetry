@@ -15,6 +15,15 @@ body {
     cursor: grab;
     z-index: 10;
     margin: 2px;
+    
+    /* CRITICAL MOBILE FIX: Prevents scroll/zoom interference on touch devices */
+    touch-action: none; 
+}
+
+/* NEW: Tap Highlight for mobile (light blue) */
+.selected-tile {
+    background-color: #ADD8E6; /* Light Blue */
+    transition: background-color 0.1s;
 }
 
 /* --- POETRY LAYOUT (The main 3-column container) --- */
@@ -99,6 +108,7 @@ body {
     background-color: #e4fcd9;
 }
 
+
 /* ================================================= */
 /* === MOBILE RESPONSIVENESS (Max Width: 768px) ==== */
 /* ================================================= */
@@ -106,52 +116,43 @@ body {
     
     /* 1. Break the main 3-column flex layout */
     #poetry-layout {
-        /* Change from row-based layout to stacked columns */
         flex-direction: column; 
-        /* Use full width of the screen */
         width: 100%; 
         max-width: none; 
         margin: 0 auto;
     }
     
-    /* 2. Style the central content (Logo, Fridge, Button) */
+    /* 2. Hide Side Pools for the single-pool mobile design */
+    #word-pool-left,
+    #word-pool-right {
+        display: none !important;
+    }
+    
+    /* 3. Style the central content */
     .center-content {
-        /* Allow it to use full width */
         width: 100%;
         flex-shrink: 1;
-        /* Remove horizontal margin, add a bit of top/bottom space */
         margin: 20px 0; 
     }
     
-    /* 3. Style the Side Pools (Left and Right) */
-    .side-pool {
-        /* Make the pools full width */
-        width: 100%; 
-        padding: 10px 20px; /* Add internal padding */
-        /* Remove the large top margin that aligned them with the fridge */
-        margin-top: 0;
-    }
-    
-    /* 4. Style the Logo */
-    #main-logo {
-        /* Keep the logo size reasonable for mobile */
-        max-width: 60%; 
-        margin: 0 auto 10px;
-    }
-    
-    /* 5. Style the Refrigerator Area */
+    /* 4. Style the Refrigerator Area */
     #refrigerator-area {
-        /* Ensure the fridge scales well */
         width: 90%; 
-        height: 350px; /* Slightly reduce the height for mobile */
+        height: 350px; 
         margin: 0 auto 15px;
     }
     
-    /* 6. Style the Main Pool (Below the Fridge) */
+    /* 5. Style the MAIN Pool (Only Pool on Mobile) */
     .main-pool {
-        width: 90%;
-        max-width: none; /* Let it expand with the screen */
+        width: 90%; /* CRITICAL: Ensure it is centered and uses the screen width */
+        max-width: none; 
         margin: 10px auto;
+        
+        /* NEW: Perfect Centering for word tiles inside the pool */
+        display: flex;
+        flex-wrap: wrap; 
+        justify-content: center; 
+        align-items: flex-start; 
     }
     
     /* Ensure the word tiles remain readable */

@@ -54,11 +54,15 @@ async function loadWordsAndCreateTiles() {
     }
 }
 
+// --- MODIFIED FUNCTION: Creates Tiles (Handles Conditional Distribution) ---
 function createTiles(wordsArray) {
     if (allPools.length === 0) {
         console.error("No word pool containers found. Check index.html IDs.");
         return; 
     }
+    
+    // CRITICAL FIX: Check if we are on a touch device
+    const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
     
     wordsArray.sort(() => Math.random() - 0.5).forEach((word, index) => {
         const tile = document.createElement('div');
@@ -67,11 +71,18 @@ function createTiles(wordsArray) {
         
         tile.setAttribute('draggable', true);
         
-        // Distribute words across ALL available pools (0=bottom, 1=left, 2=right, 0=bottom, etc.)
-        allPools[index % allPools.length].appendChild(tile);
+        // Conditional Distribution:
+        if (isTouchDevice) {
+            // MOBILE: ALL words go to the bottom pool
+            poolBottom.appendChild(tile);
+        } else {
+            // DESKTOP: Distribute words across all three pools
+            allPools[index % allPools.length].appendChild(tile);
+        }
     });
 }
 
+// --- MODIFIED FUNCTION: Clear and Shuffle (Handles Conditional Distribution) ---
 function clearAndShuffle() {
     const allTiles = document.querySelectorAll('.word-tile');
     
@@ -89,12 +100,20 @@ function clearAndShuffle() {
         fridge.appendChild(prompt);
     }
     
+    // CRITICAL FIX: Check if we are on a touch device
+    const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    
     if (allPools.length > 0) {
         const shuffledWords = Array.from(allTiles).sort(() => Math.random() - 0.5);
         
-        // Desktop: Redistribute across all pools. Mobile: All go to poolBottom (index 0).
         shuffledWords.forEach((tile, index) => {
-            allPools[index % allPools.length].appendChild(tile);
+            if (isTouchDevice) {
+                // MOBILE: ALL words go to the bottom pool
+                poolBottom.appendChild(tile);
+            } else {
+                // DESKTOP: Redistribute across all three pools
+                allPools[index % allPools.length].appendChild(tile);
+            }
         });
     }
 }
@@ -105,6 +124,7 @@ if (refreshButton) {
 
 // -----------------------------------------------------------------------
 // --- HELPER FUNCTIONS FOR MOBILE LOGIC (RANDOM PLACEMENT) ---
+// (REMAINS UNCHANGED)
 // -----------------------------------------------------------------------
 
 function getRandomFridgePosition(tile) {
@@ -144,7 +164,8 @@ function applyPoolStyles(tile) {
 }
 
 // -----------------------------------------------------------------------
-// --- DESKTOP MOUSE DRAG/DROP LISTENERS (UNTOUCHED AND UNGUARDED) ---
+// --- DESKTOP MOUSE DRAG/DROP LISTENERS (UNTOUCHED) ---
+// (REMAINS UNCHANGED)
 // -----------------------------------------------------------------------
 
 // DRAGSTART (Desktop)
@@ -192,6 +213,7 @@ allPools.forEach(pool => {
 
 // -----------------------------------------------------------------------
 // --- MOBILE TOUCH LISTENERS (GUARDED to run ONLY on touch devices) ---
+// (REMAINS UNCHANGED)
 // -----------------------------------------------------------------------
 
 if ('ontouchstart' in window || navigator.maxTouchPoints) {

@@ -2,7 +2,7 @@ body {
     font-family: sans-serif;
     text-align: center;
     background-color: #ffffff;
-    margin: 0; /* Keep margin: 0 for full control */
+    margin: 0;
 }
 
 /* --- WORD TILES --- */
@@ -15,21 +15,19 @@ body {
     cursor: grab;
     z-index: 10;
     margin: 2px;
-    
-    /* Prevents scroll/zoom interference on touch devices */
-    touch-action: none; 
+    /* REMOVED: touch-action: none to allow scrolling */
+    user-select: none; /* Prevents text selection while dragging */
 }
 
-/* Tap Highlight for mobile (light blue) */
 .selected-tile {
-    background-color: #ADD8E6; /* Light Blue */
+    background-color: #ADD8E6;
     transition: background-color 0.1s;
 }
 
 /* --- POETRY LAYOUT --- */
 #poetry-layout {
     display: flex;
-    justify-content: center; /* Centers the whole structure */
+    justify-content: center;
     width: 95%;
     max-width: 1400px; 
     margin: 20px auto;
@@ -41,11 +39,9 @@ body {
     margin: 0 20px;
 }
 
-/* --- SIDE POOLS --- */
 .side-pool {
     width: 280px; 
     padding: 10px;
-    /* Adjusted margin to vertically align with the fridge */
     margin-top: 30px; 
     text-align: center;
 }
@@ -69,20 +65,19 @@ body {
     position: relative; 
     width: 100%; 
     height: 400px;
-    margin: 0 auto; /* No vertical margin needed here */
     border: 3px solid #406dcf;
     background-color: #fff; 
-    box-shadow: 0 0 0px rgba(0,0,0,0.1);
     overflow: hidden; 
 }
 
 .poem-prompt {
     color: #999;
-    padding-top: 150px;
+    padding: 120px 40px 0; /* Added side padding for mobile readability */
     font-style: italic;
+    font-size: 1.1em;
+    line-height: 1.4;
 }
 
-/* --- MAIN POOL --- */
 .main-pool {
     width: 100%;
     max-width: 800px;
@@ -91,73 +86,63 @@ body {
     text-align: center;
 }
 
-/* --- REFRESH BUTTON --- */
 #refresh-button {
     margin: 15px auto 10px; 
     padding: 8px 15px;
     background-color: #fff;
-    color: black;
     border: 1px solid #9E9E9E;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1em;
     display: block;
 }
-
-#refresh-button:hover {
-    background-color: #e4fcd9;
-}
-
 
 /* ================================================= */
 /* === MOBILE RESPONSIVENESS (Max Width: 768px) ==== */
 /* ================================================= */
 @media screen and (max-width: 768px) {
     
-    /* 1. Break the main 3-column flex layout */
     #poetry-layout {
         flex-direction: column; 
         width: 100%; 
-        max-width: none; 
-        margin: 0 auto;
     }
     
-    /* 2. Hide Side Pools for the single-pool mobile design */
-    #word-pool-left,
-    #word-pool-right {
+    #word-pool-left, #word-pool-right {
         display: none !important;
     }
     
-    /* 3. Style the central content */
     .center-content {
         width: 100%;
-        flex-shrink: 1;
-        margin: 20px 0; 
+        margin: 10px 0; 
+    }
+
+    /* 3. SHRINK LOGO BY 7% AND MOVE SLIGHTLY LEFT */
+    #main-logo {
+        max-width: 372px; /* 400px - 7% */
+        width: 85%;      /* Responsive scaling */
+        transform: translateX(-10px); /* Nudge slightly left */
     }
     
-    /* 4. Style the Refrigerator Area */
     #refrigerator-area {
         width: 90%; 
-        height: 350px; 
+        height: 320px; 
         margin: 0 auto 15px;
     }
+
+    .poem-prompt {
+        padding-top: 80px;
+        font-size: 1em;
+    }
     
-    /* 5. Style the MAIN Pool (Only Pool on Mobile) */
     .main-pool {
-        width: 90%; /* CRITICAL: Ensure it is centered and uses the screen width */
-        max-width: none; 
+        width: 95%;
         margin: 10px auto;
-        
-        /* NEW: Perfect Centering for word tiles inside the pool */
         display: flex;
         flex-wrap: wrap; 
         justify-content: center; 
-        align-items: flex-start; 
     }
     
-    /* Ensure the word tiles remain readable */
     .word-tile {
-        font-size: 0.9em; 
-        padding: 4px 8px;
+        font-size: 0.95em; 
+        padding: 6px 10px; /* Slightly larger targets for fingers */
     }
 }

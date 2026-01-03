@@ -3,17 +3,23 @@ const poolBottom = document.getElementById('word-pool-bottom');
 const poolLeft = document.getElementById('word-pool-left');
 const poolRight = document.getElementById('word-pool-right');
 
-// Collect ALL three word pools for word distribution (desktop)
-// Mobile will only use poolBottom
 const allPools = [poolBottom, poolLeft, poolRight].filter(pool => pool !== null); 
 const refreshButton = document.getElementById('refresh-button');
 const ROW_HEIGHT = 35; 
 
-let draggedElement = null; // Used by both desktop drag and mobile touch drag
-let tapTimer = null;       // Used for mobile quick-tap detection
-let originalPool = null;   // Used to track tile's original pool for return logic
+let draggedElement = null; 
+let tapTimer = null;       
+let originalPool = null;   
 
-// --- CORE FUNCTIONS ---
+// --- Device Detection ---
+const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
+// --- NEW: Helper to get correct prompt text ---
+function getPromptText() {
+    return isTouchDevice 
+        ? "Unlock your inner poet. Tap the words below and drag them around the board to craft your poetry."
+        : "Drag words here to begin your poem...";
+}
 
 function parseWords(csvText) {
     const lines = csvText.split(/[\r\n]+/).filter(line => line.trim() !== '');
@@ -27,127 +33,90 @@ function parseWords(csvText) {
             if (word.startsWith('"') && word.endsWith('"')) {
                 word = word.substring(1, word.length - 1);
             }
-            if (word.length > 0) {
-                allWords.push(word);
-            }
+            if (word.length > 0) { allWords.push(word); }
         });
     });
-    
-    console.log(`Successfully loaded ${allWords.length} words from CSV.`);
     return allWords;
 }
 
 async function loadWordsAndCreateTiles() {
+    // Set initial prompt text
+    const prompt = fridge.querySelector('.poem-prompt');
+    if (prompt) prompt.textContent = getPromptText();
+
     try {
         const response = await fetch('Borderline Poetry - Individual words.csv'); 
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status} - File not found. Check the CSV file path and name.`);
-        }
+        if (!response.ok) throw new Error(`File not found.`);
         const csvText = await response.text();
         const finalWords = parseWords(csvText);
         createTiles(finalWords);
     } catch (error) {
-        console.error("Could not load the word list:", error);
-        if (poolBottom) {
-             poolBottom.innerHTML = '<span style="color: red;">Error loading word list. Check console for details.</span>';
-        }
+        console.error(error);
+        if (poolBottom) poolBottom.innerHTML = '<span style="color: red;">Error loading words.</span>';
     }
 }
 
-// Tiles ---
 function createTiles(wordsArray) {
-    if (allPools.length === 0) {
-        console.error("No word pool containers found. Check index.html IDs.");
-        return; 
-    }
-    
-    // Check for touch device
-    const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    
     wordsArray.sort(() => Math.random() - 0.5).forEach((word, index) => {
         const tile = document.createElement('div');
         tile.classList.add('word-tile');
         tile.textContent = word;
-        
         tile.setAttribute('draggable', true);
         
-        // Conditional Distribution:
         if (isTouchDevice) {
-            // MOBILE: ALL words go ONLY to the bottom pool
             poolBottom.appendChild(tile);
         } else {
-            // DESKTOP: Distribute words across all three pools
             allPools[index % allPools.length].appendChild(tile);
         }
     });
 }
 
-// Clear and Shuffle ---
 function clearAndShuffle() {
     const allTiles = document.querySelectorAll('.word-tile');
-    
     allTiles.forEach(tile => {
-        // Reset tile positioning/scaling regardless of which pool it will end up in
         tile.style.position = '';
         tile.style.left = '';
         tile.style.top = '';
         tile.style.transform = '';
     });
     
-    if (fridge && !fridge.querySelector('.poem-prompt')) {
-        const prompt = document.createElement('p');
-        prompt.classList.add('poem-prompt');
-        prompt.textContent = "Drag words here to begin your poem...";
-        fridge.appendChild(prompt);
+    if (fridge) {
+        fridge.querySelectorAll('.word-tile').forEach(t => t.remove());
+        let prompt = fridge.querySelector('.poem-prompt');
+        if (!prompt) {
+            prompt = document.createElement('p');
+            prompt.classList.add('poem-prompt');
+            fridge.appendChild(prompt);
+        }
+        prompt.textContent = getPromptText();
     }
     
-    // Check for touch device
-    const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    
-    if (allPools.length > 0) {
-        const shuffledWords = Array.from(allTiles).sort(() => Math.random() - 0.5);
-        
-        shuffledWords.forEach((tile, index) => {
-            if (isTouchDevice) {
-                // MOBILE: ALL words go ONLY to the bottom pool
-                poolBottom.appendChild(tile);
-            } else {
-                // DESKTOP: Redistribute across all three pools
-                allPools[index % allPools.length].appendChild(tile);
-            }
-        });
-    }
+    const shuffledWords = Array.from(allTiles).sort(() => Math.random() - 0.5);
+    shuffledWords.forEach((tile, index) => {
+        if (isTouchDevice) {
+            poolBottom.appendChild(tile);
+        } else {
+            allPools[index % allPools.length].appendChild(tile);
+        }
+    });
 }
 
-if (refreshButton) {
-    refreshButton.addEventListener('click', clearAndShuffle);
-}
+if (refreshButton) refreshButton.addEventListener('click', clearAndShuffle);
 
-// -----------------------------------------------------------------------
-// --- HELPER FUNCTIONS FOR MOBILE LOGIC (RANDOM PLACEMENT) ---
-// -----------------------------------------------------------------------
-
+// --- HELPER FUNCTIONS ---
 function getRandomFridgePosition(tile) {
     const fridgeRect = fridge.getBoundingClientRect();
-    const tileWidth = tile.offsetWidth * 1.05; // Use scaled width
-    
-    // 1. Calculate random X position within bounds
-    const maxX = fridgeRect.width - tileWidth;
-    const randomX = Math.random() * maxX;
-    const finalLeft = Math.max(0, randomX); 
-
-    // 2. Calculate random Y position snapped to a row
+    const maxX = fridgeRect.width - (tile.offsetWidth * 1.05);
     const maxRows = Math.floor(fridgeRect.height / ROW_HEIGHT);
-    const randomRow = Math.floor(Math.random() * maxRows);
-    const finalTop = randomRow * ROW_HEIGHT;
-    
-    return { left: finalLeft, top: finalTop };
+    return { 
+        left: Math.max(0, Math.random() * maxX), 
+        top: Math.floor(Math.random() * maxRows) * ROW_HEIGHT 
+    };
 }
 
 function applyFridgeStyles(tile, position) {
     const prompt = fridge.querySelector('.poem-prompt');
-    if (prompt) { prompt.remove(); }
-
+    if (prompt) { prompt.textContent = ""; } // Just empty text to keep spacing if needed
     fridge.appendChild(tile);
     tile.style.position = 'absolute';
     tile.style.left = position.left + 'px';
@@ -163,161 +132,93 @@ function applyPoolStyles(tile) {
     tile.style.transform = '';
 }
 
-// -----------------------------------------------------------------------
-// --- DESKTOP MOUSE DRAG/DROP LISTENERS ---
-// -----------------------------------------------------------------------
-
-// DRAGSTART (Desktop)
+// --- DESKTOP LISTENERS ---
 document.addEventListener('dragstart', (e) => {
     if (e.target.classList.contains('word-tile')) {
         draggedElement = e.target;
-        e.dataTransfer.setData('text/plain', e.target.textContent);
     }
 });
 
 if (fridge) {
-    // DROP ON FRIDGE (Desktop)
-    fridge.addEventListener('dragover', (e) => { e.preventDefault(); });
-
+    fridge.addEventListener('dragover', (e) => e.preventDefault());
     fridge.addEventListener('drop', (e) => {
         e.preventDefault();
-        
-        if (draggedElement && draggedElement.classList.contains('word-tile')) {
+        if (draggedElement) {
             const rect = fridge.getBoundingClientRect();
-            const rawLeft = e.clientX - rect.left - (draggedElement.offsetWidth / 2);
             const rawTop = e.clientY - rect.top - (draggedElement.offsetHeight / 2);
-            
-            const snappedTop = Math.round(rawTop / ROW_HEIGHT) * ROW_HEIGHT;
-            const finalTop = Math.max(0, snappedTop); 
-            
-            applyFridgeStyles(draggedElement, { left: rawLeft, top: finalTop });
+            const snappedTop = Math.max(0, Math.round(rawTop / ROW_HEIGHT) * ROW_HEIGHT);
+            applyFridgeStyles(draggedElement, { 
+                left: e.clientX - rect.left - (draggedElement.offsetWidth / 2), 
+                top: snappedTop 
+            });
             draggedElement = null; 
         }
     });
 }
 
-// DROP ON ANY POOL (Desktop)
-allPools.forEach(pool => {
-    pool.addEventListener('dragover', (e) => { e.preventDefault(); });
-
-    pool.addEventListener('drop', (e) => {
-        e.preventDefault();
-        
-        if (draggedElement && draggedElement.classList.contains('word-tile')) {
-            applyPoolStyles(draggedElement);
-            draggedElement = null;
-        }
-    });
-});
-
-// -----------------------------------------------------------------------
-// --- MOBILE TOUCH LISTENERS (ONLY on touch devices) ---
-// -----------------------------------------------------------------------
-
-if ('ontouchstart' in window || navigator.maxTouchPoints) {
-    
-    // --- TOUCH START (Handles both Tap-to-Move and Drag-to-Refine) ---
+// --- MOBILE TOUCH LISTENERS ---
+if (isTouchDevice) {
     document.addEventListener('touchstart', (e) => {
         const tile = e.target;
         if (!tile.classList.contains('word-tile')) return;
 
-        e.preventDefault(); // Prevents default browser actions (like scrolling/zooming)
-
-        // 1. Initial setup for the tile
         draggedElement = tile;
         originalPool = tile.parentElement;
 
-        // 2. Start the tap timer and highlight (for quick tap)
         tile.classList.add('selected-tile');
         tapTimer = setTimeout(() => {
-            // This runs if the press is LONGER than 300ms (initiates Drag-to-Refine)
-            tile.classList.remove('selected-tile'); // Remove highlight for drag
-            initiateMobileDrag(e); // Start the drag refinement process
+            tile.classList.remove('selected-tile');
+            // Only prevent default (block scroll) once we are SURE it's a drag
+            initiateMobileDrag(e);
         }, 300); 
 
-        // 3. Set up listeners to detect if the tap becomes a drag
-        document.addEventListener('touchmove', handleTouchMove);
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
         document.addEventListener('touchend', handleTouchEnd);
-    }, { passive: false });
+    }, { passive: true }); // passive: true allows the browser to scroll initially
 
-
-    // --- TOUCH MOVE (Only used for Drag-to-Refine inside the fridge) ---
     function handleTouchMove(e) {
         if (!tapTimer && draggedElement && originalPool === fridge) {
-            // This only runs if it's a drag (tapTimer was cleared) AND the tile is in the fridge
+            e.preventDefault(); // Block scrolling only during active fridge refinement
             const touch = e.touches[0];
             const fridgeRect = fridge.getBoundingClientRect();
-            
-            // Calculate new position relative to the fridge
-            const rawLeft = touch.clientX - fridgeRect.left - (draggedElement.offsetWidth * 1.05 / 2);
             const rawTop = touch.clientY - fridgeRect.top - (draggedElement.offsetHeight * 1.05 / 2);
-            
-            // Apply Snap-to-Row only for the Y-axis
-            const snappedTop = Math.round(rawTop / ROW_HEIGHT) * ROW_HEIGHT;
-            const finalTop = Math.max(0, snappedTop); 
-            
-            // Update position
-            draggedElement.style.left = rawLeft + 'px';
-            draggedElement.style.top = finalTop + 'px';
-        } 
-        
-        // CRITICAL: If tapTimer is still running, clear it (it was a drag, not a tap)
-        if (tapTimer) {
+            draggedElement.style.left = (touch.clientX - fridgeRect.left - (draggedElement.offsetWidth * 1.05 / 2)) + 'px';
+            draggedElement.style.top = Math.max(0, Math.round(rawTop / ROW_HEIGHT) * ROW_HEIGHT) + 'px';
+        } else if (tapTimer) {
+            // If the user moves their finger significantly before 300ms, it's a scroll, not a tap/drag
             clearTimeout(tapTimer);
             tapTimer = null;
-            draggedElement.classList.remove('selected-tile'); // Remove highlight
+            draggedElement.classList.remove('selected-tile');
         }
     }
 
-
-    // --- TOUCH END (Handles Tap-to-Move/Return and ends Drag-to-Refine) ---
     function handleTouchEnd(e) {
-        // 1. Clean up listeners
         document.removeEventListener('touchmove', handleTouchMove);
         document.removeEventListener('touchend', handleTouchEnd);
 
-        // 2. Check for Quick Tap (Tap-to-Move/Return)
         if (tapTimer) {
             clearTimeout(tapTimer);
-            
             if (originalPool !== fridge) {
-                // Tap-to-Move: From Pool to Fridge (Random Placement)
-                const position = getRandomFridgePosition(draggedElement);
-                applyFridgeStyles(draggedElement, position);
+                applyFridgeStyles(draggedElement, getRandomFridgePosition(draggedElement));
             } else {
-                // Tap-to-Return: From Fridge to Bottom Pool
                 applyPoolStyles(draggedElement);
             }
         }
         
-        // 3. General Cleanup
         if (draggedElement) {
             draggedElement.classList.remove('selected-tile');
             draggedElement = null; 
-            originalPool = null;
         }
         tapTimer = null;
     }
 
-    
-    // --- DRAG REFINEMENT SETUP ---
     function initiateMobileDrag(e) {
-        // This only runs on long press, AND ONLY if the tile is in the fridge.
         if (originalPool === fridge) {
-            // Set tile to fixed position for seamless finger-following
-            draggedElement.style.position = 'absolute';
-            draggedElement.style.transform = 'scale(1.05)'; 
             draggedElement.style.zIndex = '100'; 
         } else {
-            // If the long press started in the pool, treat it as a failed drag and end it.
             draggedElement = null;
-            originalPool = null;
         }
     }
 }
 
-
-// ----------------------------------------------------
-// START APPLICATION
-// ----------------------------------------------------
 loadWordsAndCreateTiles();

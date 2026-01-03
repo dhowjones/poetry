@@ -13,7 +13,7 @@ let originalPool = null;
 
 const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
-// Helper for the dynamic text prompt
+// dynamic text prompt
 function getPromptText() {
     return isTouchDevice 
         ? "Unlock your inner poet. Tap the words below to begin your poem."

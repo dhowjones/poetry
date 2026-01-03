@@ -4,7 +4,7 @@ const poolLeft = document.getElementById('word-pool-left');
 const poolRight = document.getElementById('word-pool-right');
 
 // Collect ALL three word pools for word distribution (desktop)
-// NOTE: Mobile will only use poolBottom
+// Mobile will only use poolBottom
 const allPools = [poolBottom, poolLeft, poolRight].filter(pool => pool !== null); 
 const refreshButton = document.getElementById('refresh-button');
 const ROW_HEIGHT = 35; 
@@ -13,7 +13,7 @@ let draggedElement = null; // Used by both desktop drag and mobile touch drag
 let tapTimer = null;       // Used for mobile quick-tap detection
 let originalPool = null;   // Used to track tile's original pool for return logic
 
-// --- CORE APPLICATION FUNCTIONS (UNCHANGED) ---
+// --- CORE FUNCTIONS ---
 
 function parseWords(csvText) {
     const lines = csvText.split(/[\r\n]+/).filter(line => line.trim() !== '');
@@ -54,14 +54,14 @@ async function loadWordsAndCreateTiles() {
     }
 }
 
-// --- MODIFIED FUNCTION: Creates Tiles (ENSURES ALL WORDS GO TO BOTTOM POOL ON MOBILE) ---
+// Tiles ---
 function createTiles(wordsArray) {
     if (allPools.length === 0) {
         console.error("No word pool containers found. Check index.html IDs.");
         return; 
     }
     
-    // CRITICAL FIX: Check if we are on a touch device
+    // Check for touch device
     const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
     
     wordsArray.sort(() => Math.random() - 0.5).forEach((word, index) => {
@@ -82,7 +82,7 @@ function createTiles(wordsArray) {
     });
 }
 
-// --- MODIFIED FUNCTION: Clear and Shuffle (ENSURES ALL WORDS GO TO BOTTOM POOL ON MOBILE) ---
+// Clear and Shuffle ---
 function clearAndShuffle() {
     const allTiles = document.querySelectorAll('.word-tile');
     
@@ -101,7 +101,7 @@ function clearAndShuffle() {
         fridge.appendChild(prompt);
     }
     
-    // CRITICAL FIX: Check if we are on a touch device
+    // Check for touch device
     const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
     
     if (allPools.length > 0) {
@@ -125,7 +125,6 @@ if (refreshButton) {
 
 // -----------------------------------------------------------------------
 // --- HELPER FUNCTIONS FOR MOBILE LOGIC (RANDOM PLACEMENT) ---
-// (UNCHANGED)
 // -----------------------------------------------------------------------
 
 function getRandomFridgePosition(tile) {
@@ -165,7 +164,7 @@ function applyPoolStyles(tile) {
 }
 
 // -----------------------------------------------------------------------
-// --- DESKTOP MOUSE DRAG/DROP LISTENERS (UNCHANGED) ---
+// --- DESKTOP MOUSE DRAG/DROP LISTENERS ---
 // -----------------------------------------------------------------------
 
 // DRAGSTART (Desktop)
@@ -212,8 +211,7 @@ allPools.forEach(pool => {
 });
 
 // -----------------------------------------------------------------------
-// --- MOBILE TOUCH LISTENERS (GUARDED to run ONLY on touch devices) ---
-// (UNCHANGED)
+// --- MOBILE TOUCH LISTENERS (ONLY on touch devices) ---
 // -----------------------------------------------------------------------
 
 if ('ontouchstart' in window || navigator.maxTouchPoints) {

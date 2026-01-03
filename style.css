@@ -15,7 +15,6 @@ body {
     cursor: grab;
     z-index: 10;
     margin: 2px;
-    /* REMOVED: touch-action: none to allow scrolling */
     user-select: none; /* Prevents text selection while dragging */
 }
 
@@ -72,7 +71,7 @@ body {
 
 .poem-prompt {
     color: #999;
-    padding: 120px 40px 0; /* Added side padding for mobile readability */
+    padding: 120px 40px 0;
     font-style: italic;
     font-size: 1.1em;
     line-height: 1.4;
@@ -115,17 +114,19 @@ body {
         margin: 10px 0; 
     }
 
-    /* 3. SHRINK LOGO BY 7% AND MOVE SLIGHTLY LEFT */
+    /* 1. LOGO: SHRINK AND NUDGE RIGHT */
     #main-logo {
-        max-width: 372px; /* 400px - 7% */
-        width: 85%;      /* Responsive scaling */
-        transform: translateX(-10px); /* Nudge slightly left */
+        max-width: 372px; 
+        width: 85%;      
+        transform: translateX(8px); /* Nudged right */
     }
     
+    /* 2. REFRIGERATOR: LOCK SCROLLING WHEN INTERACTING */
     #refrigerator-area {
         width: 90%; 
-        height: 320px; 
+        height: 350px; 
         margin: 0 auto 15px;
+        touch-action: none; /* Prevents page scroll when touching the fridge */
     }
 
     .poem-prompt {
@@ -143,6 +144,8 @@ body {
     
     .word-tile {
         font-size: 0.95em; 
-        padding: 6px 10px; /* Slightly larger targets for fingers */
+        padding: 8px 12px; 
+        /* Allow scroll in pool, but prevent it during a held drag */
+        touch-action: pan-y; 
     }
 }

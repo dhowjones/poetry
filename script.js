@@ -11,10 +11,9 @@ let draggedElement = null;
 let tapTimer = null;       
 let originalPool = null;   
 
-// --- Device Detection ---
 const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
-// --- NEW: Helper to get correct prompt text ---
+// Helper for the dynamic text prompt
 function getPromptText() {
     return isTouchDevice 
         ? "Unlock your inner poet. Tap the words below and drag them around the board to craft your poetry."
@@ -25,7 +24,6 @@ function parseWords(csvText) {
     const lines = csvText.split(/[\r\n]+/).filter(line => line.trim() !== '');
     const dataLines = lines.slice(1);
     let allWords = [];
-
     dataLines.forEach(line => {
         const cells = line.split(','); 
         cells.forEach(cell => {
@@ -40,7 +38,6 @@ function parseWords(csvText) {
 }
 
 async function loadWordsAndCreateTiles() {
-    // Set initial prompt text
     const prompt = fridge.querySelector('.poem-prompt');
     if (prompt) prompt.textContent = getPromptText();
 
@@ -81,7 +78,6 @@ function clearAndShuffle() {
     });
     
     if (fridge) {
-        fridge.querySelectorAll('.word-tile').forEach(t => t.remove());
         let prompt = fridge.querySelector('.poem-prompt');
         if (!prompt) {
             prompt = document.createElement('p');
@@ -116,7 +112,7 @@ function getRandomFridgePosition(tile) {
 
 function applyFridgeStyles(tile, position) {
     const prompt = fridge.querySelector('.poem-prompt');
-    if (prompt) { prompt.textContent = ""; } // Just empty text to keep spacing if needed
+    if (prompt) { prompt.textContent = ""; } 
     fridge.appendChild(tile);
     tile.style.position = 'absolute';
     tile.style.left = position.left + 'px';
@@ -134,9 +130,7 @@ function applyPoolStyles(tile) {
 
 // --- DESKTOP LISTENERS ---
 document.addEventListener('dragstart', (e) => {
-    if (e.target.classList.contains('word-tile')) {
-        draggedElement = e.target;
-    }
+    if (e.target.classList.contains('word-tile')) { draggedElement = e.target; }
 });
 
 if (fridge) {
@@ -165,30 +159,38 @@ if (isTouchDevice) {
         draggedElement = tile;
         originalPool = tile.parentElement;
 
-        tile.classList.add('selected-tile');
-        tapTimer = setTimeout(() => {
-            tile.classList.remove('selected-tile');
-            // Only prevent default (block scroll) once we are SURE it's a drag
+        if (originalPool === fridge) {
+            // Start moving fridge items immediately
             initiateMobileDrag(e);
-        }, 300); 
-
-        document.addEventListener('touchmove', handleTouchMove, { passive: false });
-        document.addEventListener('touchend', handleTouchEnd);
-    }, { passive: true }); // passive: true allows the browser to scroll initially
+        } else {
+            // Words in pool: Wait to see if it's a tap or a scroll
+            tile.classList.add('selected-tile');
+            tapTimer = setTimeout(() => {
+                tile.classList.remove('selected-tile');
+                initiateMobileDrag(e);
+            }, 250); 
+        }
+    }, { passive: false }); 
 
     function handleTouchMove(e) {
-        if (!tapTimer && draggedElement && originalPool === fridge) {
-            e.preventDefault(); // Block scrolling only during active fridge refinement
+        if (draggedElement) {
+            // STOP THE SCROLL
+            e.preventDefault(); 
+            
             const touch = e.touches[0];
             const fridgeRect = fridge.getBoundingClientRect();
+            
+            const rawLeft = touch.clientX - fridgeRect.left - (draggedElement.offsetWidth * 1.05 / 2);
             const rawTop = touch.clientY - fridgeRect.top - (draggedElement.offsetHeight * 1.05 / 2);
-            draggedElement.style.left = (touch.clientX - fridgeRect.left - (draggedElement.offsetWidth * 1.05 / 2)) + 'px';
+            
+            draggedElement.style.position = 'absolute';
+            draggedElement.style.left = rawLeft + 'px';
             draggedElement.style.top = Math.max(0, Math.round(rawTop / ROW_HEIGHT) * ROW_HEIGHT) + 'px';
-        } else if (tapTimer) {
-            // If the user moves their finger significantly before 300ms, it's a scroll, not a tap/drag
-            clearTimeout(tapTimer);
-            tapTimer = null;
-            draggedElement.classList.remove('selected-tile');
+            
+            if (tapTimer) {
+                clearTimeout(tapTimer);
+                tapTimer = null;
+            }
         }
     }
 
@@ -207,16 +209,18 @@ if (isTouchDevice) {
         
         if (draggedElement) {
             draggedElement.classList.remove('selected-tile');
+            draggedElement.style.transform = originalPool === fridge ? 'scale(1.05)' : '';
             draggedElement = null; 
         }
         tapTimer = null;
     }
 
     function initiateMobileDrag(e) {
-        if (originalPool === fridge) {
-            draggedElement.style.zIndex = '100'; 
-        } else {
-            draggedElement = null;
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        document.addEventListener('touchend', handleTouchEnd);
+        if (draggedElement) {
+            draggedElement.style.zIndex = '1000';
+            draggedElement.style.transform = 'scale(1.1)'; 
         }
     }
 }

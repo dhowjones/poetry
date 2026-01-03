@@ -16,8 +16,8 @@ const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0)
 // Helper for the dynamic text prompt
 function getPromptText() {
     return isTouchDevice 
-        ? "Unlock your inner poet. Tap the words below and drag them around the board to craft your poetry."
-        : "Drag words here to begin your poem...";
+        ? "Unlock your inner poet. Tap the words below to begin your poem."
+        : "Unlock your inner poet. Drag words here to begin your poem.";
 }
 
 function parseWords(csvText) {

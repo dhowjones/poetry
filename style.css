@@ -15,7 +15,7 @@ body {
     cursor: grab;
     z-index: 10;
     margin: 2px;
-    user-select: none; /* Prevents text selection while dragging */
+    user-select: none; 
 }
 
 /* Tap Highlight for mobile */
@@ -51,7 +51,7 @@ body {
 #logo-container {
     width: 100%;
     text-align: center;
-    margin-bottom: 5px; /* Reduced to bring author closer */
+    margin-bottom: 5px; /
 }
 
 #main-logo {
@@ -61,7 +61,7 @@ body {
     margin: 0 auto;
 }
 
-/* --- AUTHOR CREDIT --- */
+/* --- CREDIT --- */
 #author-credit {
     text-align: center;
     margin: 0 auto 20px; 
@@ -71,7 +71,7 @@ body {
     letter-spacing: 1px;
 }
 
-/* --- REFRIGERATOR AREA --- */
+/* --- REFRIGERATOR  --- */
 #refrigerator-area {
     position: relative; 
     width: 100%; 

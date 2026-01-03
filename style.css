@@ -16,17 +16,17 @@ body {
     z-index: 10;
     margin: 2px;
     
-    /* CRITICAL MOBILE FIX: Prevents scroll/zoom interference on touch devices */
+    /* Prevents scroll/zoom interference on touch devices */
     touch-action: none; 
 }
 
-/* NEW: Tap Highlight for mobile (light blue) */
+/* Tap Highlight for mobile (light blue) */
 .selected-tile {
     background-color: #ADD8E6; /* Light Blue */
     transition: background-color 0.1s;
 }
 
-/* --- POETRY LAYOUT (The main 3-column container) --- */
+/* --- POETRY LAYOUT --- */
 #poetry-layout {
     display: flex;
     justify-content: center; /* Centers the whole structure */
@@ -41,7 +41,7 @@ body {
     margin: 0 20px;
 }
 
-/* --- SIDE POOLS (The large left and right pools) --- */
+/* --- SIDE POOLS --- */
 .side-pool {
     width: 280px; 
     padding: 10px;
@@ -82,7 +82,7 @@ body {
     font-style: italic;
 }
 
-/* --- MAIN POOL (Below the Fridge) --- */
+/* --- MAIN POOL --- */
 .main-pool {
     width: 100%;
     max-width: 800px;
@@ -91,7 +91,7 @@ body {
     text-align: center;
 }
 
-/* --- REFRESH BUTTON (Below fridge) --- */
+/* --- REFRESH BUTTON --- */
 #refresh-button {
     margin: 15px auto 10px; 
     padding: 8px 15px;

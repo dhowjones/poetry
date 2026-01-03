@@ -128,14 +128,14 @@ body {
         margin: 10px 0; 
     }
 
-    /* 1. LOGO: SHRINK BY 7% AND NUDGE SLIGHTLY RIGHT */
+    /* 1. LOGO: 
     #main-logo {
         max-width: 372px; 
         width: 85%;      
         transform: translateX(8px); 
     }
 
-    /* 2. REFRIGERATOR: DISABLE SCROLLING ON TOUCH */
+    /* 2. REFRIGERATOR:
     #refrigerator-area {
         width: 90%; 
         height: 350px; 
